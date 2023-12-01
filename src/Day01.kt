@@ -1,4 +1,4 @@
-val mapof = mapOf(
+val w2d = mapOf(
     "one" to "1",
     "two" to "2",
     "three" to "3",
@@ -22,11 +22,11 @@ fun main() {
 
     val stringsB = readInput("Day01_B")
     val sumB = stringsB.sumOf { string ->
-        val word = string.findAnyOf(mapof.keys)
-        val digit = string.findAnyOf(mapof.values)
+        val word = string.findAnyOf(w2d.keys)
+        val digit = string.findAnyOf(w2d.values)
         val firstValue = firstDigit(word, digit)
-        val lastWord = string.findLastAnyOf(mapof.keys)
-        val lastDigit = string.findLastAnyOf(mapof.values)
+        val lastWord = string.findLastAnyOf(w2d.keys)
+        val lastDigit = string.findLastAnyOf(w2d.values)
         val secondValue = secondDigit(lastWord, lastDigit)
         "$firstValue$secondValue".toInt()
     }
@@ -35,7 +35,7 @@ fun main() {
 
 private fun firstDigit(word: Pair<Int, String>?, digit: Pair<Int, String>?) = word?.let {
     if ((digit?.first ?: Int.MAX_VALUE) > word.first) {
-        mapof[word.second]
+        w2d[word.second]
     } else {
         digit!!.second
     }
@@ -45,6 +45,6 @@ private fun secondDigit(word: Pair<Int, String>?, digit: Pair<Int, String>?) = w
     if ((digit?.first ?: -1) > word.first) {
         digit!!.second
     } else {
-        mapof[word.second]
+        w2d[word.second]
     }
 } ?: digit!!.second
