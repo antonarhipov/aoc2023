@@ -13,12 +13,12 @@ val w2d = mapOf(
 fun main() {
 
     val strings = readInput("Day01_A")
-    val sum = strings.sumOf { line ->
+    val sumA = strings.sumOf { line ->
         val first = line.first { it.isDigit() }
         val last = line.last { it.isDigit() }
         "$first$last".toInt()
     }
-    println("Answer for part 1: $sum")
+    println("Answer for part 1: $sumA")
 
     val stringsB = readInput("Day01_B")
     val sumB = stringsB.sumOf { string ->
