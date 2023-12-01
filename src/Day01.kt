@@ -35,7 +35,7 @@ private fun firstDigit(string: String): String {
     return if (word.first > digit.first) {
         digit.second
     } else {
-        w2d[word.second]!!
+        w2d[word.second]!! // I know what I'm doing!
     }
 }
 
