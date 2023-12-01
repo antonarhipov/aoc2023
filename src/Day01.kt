@@ -22,29 +22,30 @@ fun main() {
 
     val stringsB = readInput("Day01_B")
     val sumB = stringsB.sumOf { string ->
-        val word = string.findAnyOf(w2d.keys)
-        val digit = string.findAnyOf(w2d.values)
-        val firstValue = firstDigit(word, digit)
-        val lastWord = string.findLastAnyOf(w2d.keys)
-        val lastDigit = string.findLastAnyOf(w2d.values)
-        val secondValue = secondDigit(lastWord, lastDigit)
+        val firstValue = firstDigit(string)
+        val secondValue = secondDigit(string)
         "$firstValue$secondValue".toInt()
     }
     println("Answer for part 2: $sumB")
 }
 
-private fun firstDigit(word: Pair<Int, String>?, digit: Pair<Int, String>?) = word?.let {
-    if ((digit?.first ?: Int.MAX_VALUE) > word.first) {
-        w2d[word.second]
+private fun firstDigit(string: String): String {
+    val word = string.findAnyOf(w2d.keys) ?: (Int.MAX_VALUE to "")
+    val digit = string.findAnyOf(w2d.values) ?: (Int.MAX_VALUE to "")
+    return if (word.first > digit.first) {
+        digit.second
     } else {
-        digit!!.second
+        w2d[word.second]!!
     }
-} ?: digit!!.second
+}
 
-private fun secondDigit(word: Pair<Int, String>?, digit: Pair<Int, String>?) = word?.let {
-    if ((digit?.first ?: -1) > word.first) {
-        digit!!.second
+private fun secondDigit(string: String): String {
+    val word = string.findLastAnyOf(w2d.keys) ?: (-1 to "")
+    val digit = string.findLastAnyOf(w2d.values) ?: (-1 to "")
+    return if (word.first < digit.first) {
+        digit.second
     } else {
-        w2d[word.second]
+        w2d[word.second]!!
     }
-} ?: digit!!.second
+}
+
