@@ -1,17 +1,50 @@
+val mapof = mapOf(
+    "one" to "1",
+    "two" to "2",
+    "three" to "3",
+    "four" to "4",
+    "five" to "5",
+    "six" to "6",
+    "seven" to "7",
+    "eight" to "8",
+    "nine" to "9"
+)
+
 fun main() {
-    fun part1(input: List<String>): Int {
-        return input.size
+
+    val strings = readInput("Day01_A")
+    val sum = strings.sumOf { line ->
+        val first = line.first { it.isDigit() }
+        val last = line.last { it.isDigit() }
+        "$first$last".toInt()
     }
+    println("Answer for part 1: $sum")
 
-    fun part2(input: List<String>): Int {
-        return input.size
+    val stringsB = readInput("Day01_B")
+    val sumB = stringsB.sumOf { string ->
+        val word = string.findAnyOf(mapof.keys)
+        val digit = string.findAnyOf(mapof.values)
+        val firstValue = firstDigit(word, digit)
+        val lastWord = string.findLastAnyOf(mapof.keys)
+        val lastDigit = string.findLastAnyOf(mapof.values)
+        val secondValue = secondDigit(lastWord, lastDigit)
+        "$firstValue$secondValue".toInt()
     }
-
-    // test if implementation meets criteria from the description, like:
-    val testInput = readInput("Day01_test")
-    check(part1(testInput) == 1)
-
-    val input = readInput("Day01")
-    part1(input).println()
-    part2(input).println()
+    println("Answer for part 2: $sumB")
 }
+
+private fun firstDigit(word: Pair<Int, String>?, digit: Pair<Int, String>?) = word?.let {
+    if ((digit?.first ?: Int.MAX_VALUE) > word.first) {
+        mapof[word.second]
+    } else {
+        digit!!.second
+    }
+} ?: digit!!.second
+
+private fun secondDigit(word: Pair<Int, String>?, digit: Pair<Int, String>?) = word?.let {
+    if ((digit?.first ?: -1) > word.first) {
+        digit!!.second
+    } else {
+        mapof[word.second]
+    }
+} ?: digit!!.second
