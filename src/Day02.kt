@@ -16,7 +16,7 @@ fun solvePart1() {
     val sum = strings.sumOf { line ->
         val game = line.split(": ")
         val gameid = game[0].split(" ")[1].toInt()
-        val gamesets = game[1].split(Regex("[,;]"))
+        val gamesets = game[1].splitToGameSets()
 
         if (gamesets.any {
                 val cube = parseCubeSet(it)
@@ -26,6 +26,8 @@ fun solvePart1() {
     }
     println("Answer for part 1: $sum")
 }
+
+private fun String.splitToGameSets() = this.split(Regex("[,;]"))
 
 fun parseCubeSet(cubeSet: String): Cube {
     val cubes = cubeSet.trim().split(" ")
@@ -53,11 +55,11 @@ private fun calculatePower(map: Map<String, List<Int>>) =
 
 private fun parseLine(line: String): Map<String, List<Int>> {
     val game = line.split(": ")
-    val gamesets = game[1].split(Regex("[,;]"))
+    val gamesets = game[1].splitToGameSets()
 
     return gamesets.map {
-        val (count, color) = it.trim().split(" ")
-        color to count.toInt()
+        val (score, color) = it.trim().split(" ")
+        color to score.toInt()
     }.groupBy(
         { it.first },
         { it.second }
@@ -83,7 +85,7 @@ private fun computeMaxScores(resultsLine: String): Map<String, Int> {
         .associateByMaxScore()
 }
 
-private fun String.splitToGameSets() = this.split(Regex("[,;]"))
+
 
 private fun List<String>.associateByMaxScore(): Map<String, Int> {
     return this.map { draw ->
