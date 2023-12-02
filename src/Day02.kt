@@ -51,7 +51,7 @@ private fun solvePart2() {
 }
 
 private fun calculatePower(map: Map<String, List<Int>>) =
-    map.values.fold(1) { acc, ints -> acc * (ints.maxOrNull() ?: 1) }
+    map.values.fold(1) { acc, ints -> acc * ints.max() }
 
 private fun parseLine(line: String): Map<String, List<Int>> {
     val game = line.split(": ")
