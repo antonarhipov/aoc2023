@@ -54,12 +54,14 @@ private fun calculatePower(map: Map<String, List<Int>>) =
 private fun parseLine(line: String): Map<String, List<Int>> {
     val game = line.split(": ")
     val gamesets = game[1].split(Regex("[,;]"))
-    //maybe there is a better way to group? (See Part 2B)
-    return gamesets.groupBy(
-        { it.trim().split(" ")[1] },
-        { it.trim().split(" ")[0].toInt() }
-    )
 
+    return gamesets.map {
+        val (count, color) = it.trim().split(" ")
+        color to count.toInt()
+    }.groupBy(
+        { it.first },
+        { it.second }
+    )
 }
 //endregion
 
