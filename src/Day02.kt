@@ -85,14 +85,12 @@ private fun computeMaxScores(resultsLine: String): Map<String, Int> {
         .associateByMaxScore()
 }
 
-
-
 private fun List<String>.associateByMaxScore(): Map<String, Int> {
     return this.map { draw ->
         val (score, color) = draw.trim().split(" ")
         color to score.toInt()
     }.groupBy({ it.first }, { it.second })
-        .mapValues { (_, scores) -> scores.maxOrNull() ?: 0 }
+        .mapValues { (_, scores) -> scores.max() }
 }
 
 private fun calculateProduct(map: Map<String, Int>) = map.values.fold(1) { acc, ints -> acc * ints }
