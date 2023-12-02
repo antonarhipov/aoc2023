@@ -6,11 +6,12 @@ val availableCubes = mapOf(
 
 fun main() {
     solvePart1()
+    solvePart1B()
     solvePart2()
     solvePart2B()
 }
 
-//region Part 1
+//region Part 1: summing up ids of valid games
 fun solvePart1() {
     val strings = readInput("Day02_A")
     val sum = strings.sumOf { line ->
@@ -39,8 +40,27 @@ fun parseCubeSet(cubeSet: String): Cube {
 data class Cube(val count: Int, val color: String)
 //endregion
 
+//region Part 1B: summing up indexes of valid games
+fun solvePart1B() {
+    val strings = readInput("Day02_A")
 
-//region Part 2
+    val sum = strings
+        .map { it.split(": ") }
+        .map { it[1].splitToGameSets() }
+        .foldIndexed(0) {
+            index, acc, gamesets -> acc + if (gamesets.any {
+                val cube = parseCubeSet(it)
+                val total = availableCubes[cube.color] ?: 0
+                total < cube.count
+            }) 0 else index + 1
+        }
+
+    println("Answer for part 1B: $sum")
+}
+//endregion
+
+
+//region Part 2: simple grouping
 private fun solvePart2() {
     val strings = readInput("Day02_B")
     val sum = strings.sumOf { line ->
@@ -68,7 +88,7 @@ private fun parseLine(line: String): Map<String, List<Int>> {
 //endregion
 
 
-//region Part 2B
+//region Part 2B: extension for grouping
 private fun solvePart2B() {
     val strings = readInput("Day02_B")
     val sum = strings.sumOf { line ->
