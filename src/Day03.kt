@@ -62,14 +62,10 @@ fun part2() {
 }
 
 fun findGears(spec: List<String>): List<Gear> {
-    val symbols = mutableListOf<GearSymbol>()
-    spec.forEachIndexed { index, it ->
-        val gearSymbols = extractGearSymbols(index, it)
-        symbols.addAll(gearSymbols)
+    val symbols = spec.flatMapIndexed { index, it ->
+        extractGearSymbols(index, it)
     }
-
     val numbers = findNumbers(spec)
-
     return symbols.mapNotNull { it.toGearOrNull(numbers) }
 }
 
