@@ -69,8 +69,7 @@ fun findGears(spec: List<String>): List<Gear> {
 
     val numbers = findNumbers(spec)
 
-    val gears = symbols.map { it.toGearOrNull(numbers) }.filterNotNull()
-    return gears
+    return symbols.mapNotNull { it.toGearOrNull(numbers) }
 }
 
 private fun GearSymbol.toGearOrNull(numbers: List<Number>): Gear? {
