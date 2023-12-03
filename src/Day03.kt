@@ -1,8 +1,12 @@
-data class Number(val value: Int, val row: Int, val position: Pair<Int, Int>)
+import kotlin.math.abs
 
 fun main() {
     part1()
+    part2()
 }
+
+//region Part 1
+data class Number(val value: Int, val row: Int, val position: Pair<Int, Int>)
 
 private fun part1() {
     val engineSpec: List<String> = readInput("Day03_A").wrap()
@@ -42,6 +46,54 @@ fun findNumbers(spec: List<String>): List<Number> {
 fun extractNumbers(index: Int, line: String) = Regex("(\\d++)").findAll(line).map {
     Number(it.value.toInt(), index, Pair(it.range.first, it.range.last))
 }.toList()
+//endregion
+
+//region Part 2
+data class Gear(val ratio: Int)
+data class GearSymbol(val row: Int, val position: Int)
+
+fun part2() {
+    val engineSpec: List<String> = readInput("Day03_B").wrap()
+    val sum = findGears(engineSpec).sumOf {
+        it.ratio
+    }
+    println("Answer for part 2: $sum")
+}
+
+fun findGears(spec: List<String>): List<Gear> {
+    val symbols = mutableListOf<GearSymbol>()
+    spec.forEachIndexed { index, it ->
+        val gearSymbols = extractGearSymbols(index, it)
+        symbols.addAll(gearSymbols)
+    }
+
+    val numbers = findNumbers(spec)
+
+    val gears = symbols.map { it.toGearOrNull(numbers) }.filterNotNull()
+    return gears
+}
+
+private fun GearSymbol.toGearOrNull(numbers: List<Number>): Gear? {
+    val adjacentNumbers = findAdjacentNumbers(numbers)
+    return if (adjacentNumbers.size == 2) {
+        Gear(adjacentNumbers[0].value * adjacentNumbers[1].value)
+    } else {
+        null
+    }
+}
+
+private fun GearSymbol.findAdjacentNumbers(numbers: List<Number>): List<Number> {
+    val adjacentNumbers: List<Number> =
+        numbers.filter {
+            abs(it.row - row) < 2 && position in it.position.first - 1..it.position.second + 1
+        }
+    return adjacentNumbers
+}
+
+fun extractGearSymbols(index: Int, line: String) = Regex("\\*").findAll(line).map {
+    GearSymbol(index, it.range.first)
+}.toList()
+//endregion
 
 fun List<String>.wrap() =
     buildList {
