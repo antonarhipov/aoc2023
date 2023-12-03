@@ -49,7 +49,8 @@ fun extractNumbers(index: Int, line: String) = Regex("(\\d++)").findAll(line).ma
 //endregion
 
 //region Part 2
-data class Gear(val ratio: Int)
+@JvmInline
+value class Gear(val ratio: Int)
 data class GearSymbol(val row: Int, val position: Int)
 
 fun part2() {
