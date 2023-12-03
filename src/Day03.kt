@@ -6,9 +6,10 @@ fun main() {
 
 private fun part1() {
     val engineSpec: List<String> = readInput("Day03_A").wrap()
-    findNumbers(engineSpec).sumOf {
+    val sum = findNumbers(engineSpec).sumOf {
         if (it.isPartNumber(engineSpec)) it.value else 0
-    }.println()
+    }
+    println("Answer for part 1: $sum")
 }
 
 private fun Number.isPartNumber(spec: List<String>): Boolean {
