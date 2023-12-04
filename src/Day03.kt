@@ -93,9 +93,9 @@ fun extractGearSymbols(index: Int, line: String) = Regex("\\*").findAll(line).ma
 
 fun List<String>.wrap() =
     buildList {
-        add(".".repeat(this@wrap[0].length))
+        add(".".repeat(this@wrap[0].length + 2))
         addAll(this@wrap.map { ".$it." })
-        add(".".repeat(this@wrap[0].length))
+        add(".".repeat(this@wrap[0].length + 2))
     }
 
 //region Test data
