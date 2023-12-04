@@ -53,7 +53,7 @@ fun extractNumbers(index: Int, line: String) = Regex("(\\d++)").findAll(line).ma
 value class Gear(val ratio: Int)
 data class GearSymbol(val row: Int, val position: Int)
 
-fun part2() {
+private fun part2() {
     val engineSpec: List<String> = readInput("Day03_B").wrap()
     val sum = findGears(engineSpec).sumOf {
         it.ratio
