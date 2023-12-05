@@ -1,22 +1,55 @@
 fun main() {
     part1()
+    part2()
 }
+
+
+//region Part 1:
+private fun part1() {
+    val input = readInput("Day05_A").splitByEmptyLines()
+    val seeds = input.first().first().replace("seeds: ", "").split(" ").map { it.trim().toLong() }
+    val mappings = createMappings(input)
+    val result = seeds.minOf { seed ->
+        findLocationForSeed(seed, mappings)
+    }
+    println("Part 1: $result")
+}
+//endregion
+
+//region Part 2
+private fun part2() {
+    val input = readInput("Day05_B").splitByEmptyLines()
+
+    val chunked = input.first().first().replace("seeds: ", "").split(" ").chunked(2)
+    val seedRanges = chunked.map {
+        val firstValue = it.first().trim().toLong()
+        val span = it.last().trim().toLong()
+        firstValue..<firstValue + span
+    }
+
+    val mappings = createMappings(input)
+
+    var min = Long.MAX_VALUE
+    for (range in seedRanges) {
+        for (seed in range) {
+            val location = findLocationForSeed(seed, mappings)
+            if (min > location) {
+                min = location
+            }
+        }
+    }
+
+    println("Part 2: $min")
+}
+//endregion
+
 
 class Mapping(val name: String, val rules: List<Rule>)
 class Rule(val destination: Long, val source: Long, val span: Long)
 
-private fun part1() {
-    val input = readInput("Day05_A")
-    val splits = input.fold(mutableListOf(mutableListOf<String>())) { acc, s ->
-        if (s.isEmpty()) acc.add(mutableListOf())
-        else acc.last().add(s)
-        acc
-    }
-
-    val seeds = splits.first().first().replace("seeds: ", "").split(" ").map { it.trim().toLong() }
-
+private fun createMappings(input: MutableList<MutableList<String>>): MutableMap<String, Mapping> {
     val mappings = mutableMapOf<String, Mapping>()
-    for (rawMapping in splits.drop(1)) {
+    for (rawMapping in input.drop(1)) {
         val name = rawMapping.first().replace(" map:", "")
         val rules: List<Rule> = rawMapping.drop(1).map { ruleString ->
             val (destination, source, span) = ruleString.split(" ").map { it.trim().toLong() }
@@ -24,24 +57,25 @@ private fun part1() {
         }
         mappings[name] = Mapping(name, rules)
     }
-
-    val result = seeds.minOf { seed ->
-        findLocationForSeed(seed, mappings)
-    }
-    println("Part 1: $result")
-
+    return mappings
 }
+
+private fun List<String>.splitByEmptyLines(): MutableList<MutableList<String>> =
+    fold(mutableListOf(mutableListOf<String>())) { acc, s ->
+        if (s.isEmpty()) acc.add(mutableListOf())
+        else acc.last().add(s)
+        acc
+    }
 
 fun List<Rule>.find(number: Long): Long {
-    for (rule in this) {
-        if (number in rule.source..rule.source + rule.span) {
-            return rule.destination + number - rule.source
-        }
-    }
-    return number
+    return this
+        .firstOrNull { number in it.source..it.source + it.span }
+        ?.let { it.destination + number - it.source }
+        ?: number
 }
 
-fun findLocationForSeed(seed: Long, mappings: Map<String, Mapping>) : Long {
+// This is ugly. Would love to make this work for any combination of pipelines
+fun findLocationForSeed(seed: Long, mappings: Map<String, Mapping>): Long {
     val soil = mappings["seed-to-soil"]?.rules?.find(seed)!!
     val fertilizer = mappings["soil-to-fertilizer"]?.rules?.find(soil)!!
     val water = mappings["fertilizer-to-water"]?.rules?.find(fertilizer)!!
@@ -49,8 +83,6 @@ fun findLocationForSeed(seed: Long, mappings: Map<String, Mapping>) : Long {
     val temperature = mappings["light-to-temperature"]?.rules?.find(light)!!
     val humidity = mappings["temperature-to-humidity"]?.rules?.find(temperature)!!
     val location = mappings["humidity-to-location"]?.rules?.find(humidity)!!
-
-    println("Seed $seed, soil $soil, fertilizer $fertilizer, water $water, light $light, temperature $temperature, humidity $humidity, location $location.")
     return location
 }
 
