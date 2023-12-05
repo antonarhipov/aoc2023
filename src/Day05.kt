@@ -3,8 +3,7 @@ fun main() {
     part2()
 }
 
-
-//region Part 1:
+//region Part 1
 private fun part1() {
     val input = readInput("Day05_A").splitByEmptyLines()
     val seeds = input.first().first().replace("seeds: ", "").split(" ").map { it.trim().toLong() }
@@ -51,13 +50,15 @@ private fun createMappings(input: MutableList<MutableList<String>>): MutableMap<
     val mappings = mutableMapOf<String, Mapping>()
     for (rawMapping in input.drop(1)) {
         val name = rawMapping.first().replace(" map:", "")
-        val rules: List<Rule> = rawMapping.drop(1).map { ruleString ->
-            val (destination, source, span) = ruleString.split(" ").map { it.trim().toLong() }
-            Rule(destination, source, span)
-        }
+        val rules: List<Rule> = rawMapping.drop(1).map { it.toRule() }
         mappings[name] = Mapping(name, rules)
     }
     return mappings
+}
+
+private fun String.toRule(): Rule {
+    val (destination, source, span) = this.split(" ").map { it.trim().toLong() }
+    return Rule(destination, source, span)
 }
 
 private fun List<String>.splitByEmptyLines(): MutableList<MutableList<String>> =
@@ -74,19 +75,27 @@ fun List<Rule>.find(number: Long): Long {
         ?: number
 }
 
-// This is ugly. Would love to make this work for any combination of pipelines
+// This is ugly. Would love to make this more flexible
 fun findLocationForSeed(seed: Long, mappings: Map<String, Mapping>): Long {
-    val soil = mappings["seed-to-soil"]?.rules?.find(seed)!!
-    val fertilizer = mappings["soil-to-fertilizer"]?.rules?.find(soil)!!
-    val water = mappings["fertilizer-to-water"]?.rules?.find(fertilizer)!!
-    val light = mappings["water-to-light"]?.rules?.find(water)!!
-    val temperature = mappings["light-to-temperature"]?.rules?.find(light)!!
-    val humidity = mappings["temperature-to-humidity"]?.rules?.find(temperature)!!
-    val location = mappings["humidity-to-location"]?.rules?.find(humidity)!!
-    return location
+    val pipelines = arrayOf(
+        "seed-to-soil",
+        "soil-to-fertilizer",
+        "fertilizer-to-water",
+        "water-to-light",
+        "light-to-temperature",
+        "temperature-to-humidity",
+        "humidity-to-location"
+    )
+
+    var nextSeed = seed
+    for (pipeline in pipelines) {
+        nextSeed = mappings[pipeline]?.rules?.find(nextSeed) ?: break
+    }
+    return nextSeed
 }
 
 //region Test data
+@Suppress("unused")
 val seedMap = """
     seeds: 79 14 55 13
 
