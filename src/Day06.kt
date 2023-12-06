@@ -1,12 +1,10 @@
 fun main() {
     val times = part1input[0].toValues()
     val distances = part1input[1].toValues()
-
     println("Part 1: ${calculateProductOfExceedingDistances(times, distances)}")
 
     val time = part2input[0].toValue()
     val distance = part2input[1].toValue()
-    println("Time: $time, distance: $distance")
     println("Part 2: ${calculateProductOfExceedingDistances(listOf(time), listOf(distance))}")
 }
 
